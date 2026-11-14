@@ -1,5 +1,5 @@
 /**
- * dsh-mistral-pro browser half.
+ * dsh-mistral browser half.
  *
  * Two contributions: a settings page that manages subscription accounts,
  * models, usage display and transport settings, and a composer usage pill that
@@ -8,14 +8,14 @@
  * reaches the browser.
  */
 window.__ModuleLoader__.load({
-  id: 'dsh-mistral-pro',
+  id: 'dsh-mistral',
   factory(require) {
     const React = require('react')
     const h = React.createElement
     const { useState, useEffect, useCallback } = React
 
     const NS = 'mistral-pro'
-    const API = '/plugins/dsh-mistral-pro'
+    const API = '/plugins/dsh-mistral'
 
     const EN = {
       sectionTitle: 'Mistral Pro',
