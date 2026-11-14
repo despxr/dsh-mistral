@@ -448,8 +448,25 @@ ctx.tools.register(
           const state = projections?.stateOf?.(handle, 'tokenUsage')
           const totals = state?.totals
           if (totals === undefined || totals === null) continue
+          // The routed model is not on the session header or the projection; it
+          // is recorded per request as a `request/header` event, whose
+          // data.header.config carries { provider, model, reasoningEffort }.
+          const model = (() => {
+            try {
+              const snap = handle?.eventsSnapshot ?? []
+              for (let i = snap.length - 1; i >= 0; i -= 1) {
+                const event = snap[i]
+                if (event?.type !== 'request/header') continue
+                const id = event?.data?.header?.config?.model
+                if (typeof id === 'string' && id !== '') return id
+              }
+            } catch {
+              // Fall through to the configured default.
+            }
+            return current.models?.default ?? ''
+          })()
           turns.push({
-            model: entry?.model ?? current.models?.default ?? '',
+            model: String(model),
             usage: {
               inputTokens: (totals.uncachedInputTokens ?? 0) + (totals.cacheReadTokens ?? 0),
               outputTokens: totals.outputTokens ?? 0,
