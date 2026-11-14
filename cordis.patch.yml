@@ -1,0 +1,9 @@
+# dsh-mistral bundle patch: one Host row over any profile.
+# The row name resolves from the profile's own node_modules where
+# `dsh plugin --profile <profile> add <path>` installed this package.
+- insert:
+    - id: mistral
+      name: dsh-mistral
+      config:
+        api:
+          type: responses

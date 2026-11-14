@@ -1,0 +1,63 @@
+{
+  "name": "dsh-mistral",
+  "version": "1.0.0",
+  "description": "Mistral for DeepSeek Harness in one plugin: Responses API by default, prompt caching, per-model cost, subscription usage, and the platform tools (OCR, embeddings, FIM, batch).",
+  "icon": "icon.svg",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0",
+    "dsh": ">=0.2.1-rc.5"
+  },
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "dsh",
+    "mistral",
+    "responses-api",
+    "prompt-caching",
+    "cordis"
+  ],
+  "peerDependencies": {
+    "@deepseek-ai/dsh-launch-environment": ">=0.2.1-rc.5",
+    "@deepseek-ai/dsh-llm": ">=0.2.1-rc.5",
+    "@deepseek-ai/dsh-tools": ">=0.2.1-rc.5",
+    "@deepseek-ai/schemastery": ">=3.19.0"
+  },
+  "author": "despxr",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/despxr/dsh-mistral.git"
+  }
+}
