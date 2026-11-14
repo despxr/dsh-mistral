@@ -1,5 +1,5 @@
 /**
- * dsh-mistral-pro — a Mistral subscription provider for DeepSeek Harness.
+ * dsh-mistral — a Mistral subscription provider for DeepSeek Harness.
  *
  * The Host half registers one `llm` route backed by Mistral's OpenAI-compatible
  * chat completions API, keeps a live model catalog, resolves keys through the
@@ -23,7 +23,7 @@ export const inject = ['llm', 'tools']
 
 const DEFAULT_BASE = 'https://api.mistral.ai/v1'
 const ROUTE_PREFIX = '/plugins/dsh-mistral'
-const LOG_TAG = '[dsh-mistral-pro]'
+const LOG_TAG = '[dsh-mistral]'
 
 /** JSON response helper shared by every route. */
 /** Tool output renderer: dsh content blocks, losslessly JSON-serialisable. */

@@ -8,9 +8,9 @@ Replaces the `dsh-mistral-pro` + `dsh-mistral-native` pair with a single bundle 
 
 Three problems, all fixed here:
 
-1. **Reasoning models break on Chat Completions.** Mistral rejects a replayed `reasoning_content` with `422 extra_forbidden`, so GLM/DeepSeek lose their chain of thought between turns. The Responses API carries reasoning as a replayable item. This bundle defaults to it.
+1. **Reasoning models break on Chat Completions.** Mistral rejects a replayed `reasoning_content` with `422 extra_forbidden`, so GLM/DeepSeek lose their chain of thought between turns. The Responses API carries reasoning as a replayable item, and this bundle replays completed reasoning items on the next turn.
 2. **Cost renders blank.** `dsh-chat-cost` maps the route `mistral` but not `mistral-pro`, and its models.dev snapshot predates `deepseek-v4-1-flash-1017`, `zai-glm-5-3` and `mistral-large-4`. This bundle ships its own price table.
-3. **Prompt caching was off.** Mistral bills cached prefix tokens at 10%. Nothing was sending `prompt_cache_key` consistently, so every turn paid full price for the system prompt.
+3. **Prompt caching was invisible.** Mistral bills cached prefix tokens at a discount, but the old route reported no cache reads. This bundle surfaces `cacheReadTokens` and bills the cached portion at the cache rate.
 
 ## Install
 
@@ -65,11 +65,12 @@ To use other Mistral models, either add them to `modelCatalog.enabled` or turn
 
 | Model | input | output | cache read |
 |---|---|---|---|
-| `deepseek-v4-1-flash-1017` | 0.27 | 1.10 | 0.027 |
-| `deepseek-v4-1-pro` | 0.55 | 2.19 | 0.055 |
-| `zai-glm-5-3` | 0.60 | 2.20 | 0.06 |
-| `zai-glm-5-3-flash` | 0.15 | 0.60 | 0.015 |
-| `mistral-large-4` | 2.00 | 6.00 | 0.20 |
+| `deepseek-v4-1-flash-1017` | 0.30 | 1.20 | 0.007 |
+| `zai-glm-5-3` | 1.40 | 4.40 | 0.14 |
+| `zai-glm-5-3-flash` | 0.15 | 0.50 | 0.03 |
+| `mistral-large-4` | 0.70 | 2.10 | 0.07 |
+| `mistral-medium-latest` | 1.50 | 7.50 | 0.15 |
+| `mistral-small-latest` | 0.15 | 0.60 | 0.015 |
 | `codestral-latest` | 0.30 | 0.90 | 0.03 |
 
 Unknown models fall back to a mid-tier estimate and report `priced: false`
@@ -80,9 +81,18 @@ input rate. Verified against a real turn:
 
 ```
 input 6960, cached 6784, output 86
-→ $0.0003 total, of which cache read $0.0002
-   (the same 6784 tokens uncached would cost $0.0018)
+→ $0.0002 total, of which cache read $0.00005
+   (the same 6784 tokens uncached would cost $0.0020)
 ```
+
+## Vision
+
+On the Responses wire, user attachments and tool-result images are sent as
+`input_image` parts with a data URL, both in user content and in
+`function_call_output`. The model list comes from the live
+`GET /v1/models` `capabilities.vision` flag, so DeepSeek V4.1 Flash,
+GLM-5.3-Flash, Mistral Large 4 and Magistral advertise image input while
+GLM-5.3 stays text-only.
 
 ## Tools
 
@@ -103,11 +113,16 @@ Bundled from `dsh-mistral-native`:
 - `mistral_usage` returns the real budget (`255 EUR` Vibe, `25.5 EUR` API)
 - Prompt caching hits: `cacheReadTokens: 6784` of `6899` input on a warm turn
 - Model filtering: `defaultOnly` → DeepSeek only; `enabled: [zai-glm-5-3]` → DeepSeek + GLM; `defaultOnly: false` → all
-- Cost math cross-checked against the documented 10% cache rate
+- Vision: user image, tool-result image, and multi-image turns complete over `/responses`
+- Reasoning replay: a completed reasoning item is replayed and accepted on the next turn
+- Cost math cross-checked against models.dev / Mistral's published rates
 
 ## Gotchas found while building
 
 - `PROVIDER_ID` must not be `mistral` — collides with the built-in provider.
+- Responses content parts are `input_text` / `input_image` with a string URL;
+  the Chat Completions `text` / `image_url` shape is rejected with
+  `400 input.str: Input should be a valid string`.
 - The tool output renderer must return dsh content blocks (`[{type:'text',...}]`),
   not an HTTP `Response`; sharing one `json()` helper for both fails with
   `output.render returned non-lossless JSON`.
