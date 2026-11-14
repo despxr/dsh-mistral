@@ -434,17 +434,32 @@ ctx.tools.register(
 
     route('/cost', async () => {
       const current = read()
-      const sessions = ctx.get('sessions')
+      // `tokenMeter` registers a `tokenUsage` session projection whose state is
+      // { totals: {uncachedInputTokens, outputTokens, cacheReadTokens, cacheWriteTokens}, last }.
+      // `sessionProjections.stateOf(session, key)` is the read path.
+      const projections = ctx.get('sessionProjections')
       const turns = []
       try {
+        const sessions = ctx.get('sessions')
         const list = typeof sessions?.list === 'function' ? await sessions.list({ limit: 50 }) : []
         for (const entry of Array.isArray(list) ? list : []) {
-          const usage = entry?.usage ?? entry?.tokens
-          if (usage === undefined || usage === null) continue
-          turns.push({ model: entry?.model ?? current.models?.default ?? '', usage })
+          const handle = entry?.session ?? entry
+          if (handle === undefined) continue
+          const state = projections?.stateOf?.(handle, 'tokenUsage')
+          const totals = state?.totals
+          if (totals === undefined || totals === null) continue
+          turns.push({
+            model: entry?.model ?? current.models?.default ?? '',
+            usage: {
+              inputTokens: (totals.uncachedInputTokens ?? 0) + (totals.cacheReadTokens ?? 0),
+              outputTokens: totals.outputTokens ?? 0,
+              cacheReadTokens: totals.cacheReadTokens ?? 0,
+              cacheWriteTokens: totals.cacheWriteTokens ?? 0,
+            },
+          })
         }
       } catch {
-        // A host without a sessions service simply reports no cost.
+        // A host without the projection registry simply reports no cost.
       }
       const summary = summarizeCost(turns)
       return json({
