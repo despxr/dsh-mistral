@@ -12,6 +12,9 @@ import { resolveCatalog, isVisible } from './lib/catalog.js'
 import { AccountPool, resolveAccountKey } from './lib/accounts.js'
 import { MistralProAdapter } from './lib/adapter.js'
 import { createUsageService, summarizeCost } from './lib/usage.js'
+import { readFileSync } from 'node:fs'
+import { homedir } from 'node:os'
+import { join } from 'node:path'
 import { defineTool } from '@deepseek-ai/dsh-tools'
 
 export { Config }
@@ -37,14 +40,38 @@ function json(data, status = 200) {
 }
 
 
-/** Resolve the API key from the launching environment. */
+/**
+ * Read a secret from dsh's own credential store (~/.dsh/.credentials.yaml).
+ *
+ * The TUI and web profiles keep keys there rather than exporting them, so a
+ * plugin that reads only `process.env` works from a shell but fails when the
+ * host launches it. `refs.<NAME>` is a plain string or `{ value }`.
+ */
+function credentialRef(name) {
+  try {
+    const home = process.env.DSH_HOME ?? join(homedir(), '.dsh')
+    const text = readFileSync(join(home, '.credentials.yaml'), 'utf8')
+    const refs = /^refs:[ \t]*\n([\s\S]*?)(?=^\S|$)/m.exec(text)
+    if (refs === null) return undefined
+    const line = new RegExp(`^[ \\t]+${name}:[ \\t]*(.+)$`, 'm').exec(refs[1])
+    if (line === null) return undefined
+    const raw = line[1].trim().replace(/^['"]|['"]$/g, '')
+    // A nested object form keeps the value on a deeper line.
+    const nested = /^value:\s*(.+)$/.exec(raw)
+    return (nested?.[1] ?? raw).trim() || undefined
+  } catch {
+    return undefined
+  }
+}
+
+/** Resolve the API key from the environment, then the dsh credential store. */
 function apiKeyOf(config) {
   const envName = config?.apiKeyEnv ?? 'MISTRAL_API_KEY'
-  const key = process.env[envName]
-  if (typeof key !== 'string' || key.trim() === '') {
-    throw new Error(`no Mistral API key: set ${envName}`)
-  }
-  return key.trim()
+  const fromEnv = process.env[envName]
+  if (typeof fromEnv === 'string' && fromEnv.trim() !== '') return fromEnv.trim()
+  const stored = credentialRef(envName)
+  if (stored !== undefined && stored !== '') return stored
+  throw new Error(`no Mistral API key: set ${envName} or add it to ~/.dsh/.credentials.yaml refs`)
 }
 
 async function callMistral(config, path, body, { method = 'POST', signal } = {}) {
