@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { toResponsesContent, toResponsesInput, responsesEventToChunk } from '../lib/responses.js'
+import { toResponsesContent, toResponsesInput, responsesEventToChunk, tokenUsageFromChat } from '../lib/responses.js'
 
 const image = 'data:image/png;base64,AAAA'
 
@@ -73,4 +73,19 @@ test('argument deltas keep the call id from output_item.added', () => {
 test('empty content becomes an empty string', () => {
   assert.equal(toResponsesContent(undefined), '')
   assert.equal(toResponsesContent([]), '')
+})
+
+test('usage reports uncached input separately from cache reads', () => {
+  const usage = tokenUsageFromChat({
+    prompt_tokens: 23490,
+    completion_tokens: 252,
+    total_tokens: 23742,
+    prompt_tokens_details: { cached_tokens: 22400 },
+  })
+  assert.deepEqual(usage, {
+    inputTokens: 1090,
+    outputTokens: 252,
+    totalTokens: 23742,
+    cacheReadTokens: 22400,
+  })
 })

@@ -1,6 +1,6 @@
 {
   "name": "dsh-mistral",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Mistral for DeepSeek Harness in one plugin: Responses API by default, prompt caching, per-model cost, subscription usage, and the platform tools (OCR, embeddings, FIM, batch).",
   "icon": "icon.svg",
   "type": "module",
