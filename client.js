@@ -18,7 +18,7 @@ window.__ModuleLoader__.load({
     const API = '/plugins/dsh-mistral'
 
     const EN = {
-      sectionTitle: 'Mistral Pro',
+      sectionTitle: 'Mistral',
       sectionSubtitle: 'Mistral subscription accounts, models and usage',
       accountsTitle: 'Accounts',
       accountsHint:
@@ -95,9 +95,9 @@ window.__ModuleLoader__.load({
       proxy: 'Proxy URL (http/https/socks5)',
       saveAdvanced: 'Save advanced settings',
       advancedSaved: 'Advanced settings saved.',
-      pillTitle: 'Mistral Pro usage',
+      pillTitle: 'Mistral usage',
       panelClose: 'Close',
-      panelSetup: 'Open Settings → Mistral Pro to add an account and an API key.',
+      panelSetup: 'Open Settings → Mistral to add an account and an API key.',
       panelNoData: 'No usage data yet.',
       pillNoAccount: 'No Mistral account configured',
       pillSetup: 'Open settings',
@@ -113,7 +113,7 @@ window.__ModuleLoader__.load({
       onlyVisible: 'Only visible',
       panelCookieTitle: 'The API key could not read usage',
       panelCookieBody: 'The billing endpoints refused this key; it may lack the usage permission. An admin-site cookie can read the same numbers.',
-      panelCookieSteps: 'Sign in to admin.mistral.ai, copy the Cookie header from any request, and paste it under Settings → Mistral Pro → Advanced.',
+      panelCookieSteps: 'Sign in to admin.mistral.ai, copy the Cookie header from any request, and paste it under Settings → Mistral → Advanced.',
       panelOpenAdmin: 'Open Mistral Admin',
       windowVibe: 'Vibe budget',
       windowApi: 'API budget',
@@ -121,7 +121,7 @@ window.__ModuleLoader__.load({
     }
 
     const ZH = {
-      sectionTitle: 'Mistral Pro',
+      sectionTitle: 'Mistral',
       sectionSubtitle: 'Mistral 订阅账号、模型与额度',
       accountsTitle: '账号',
       accountsHint: '请求按从上到下的顺序尝试。鉴权失败、限流或额度耗尽的 Key 会在开始输出文字前被跳过。',
@@ -197,9 +197,9 @@ window.__ModuleLoader__.load({
       proxy: '代理地址（http/https/socks5）',
       saveAdvanced: '保存高级设置',
       advancedSaved: '高级设置已保存。',
-      pillTitle: 'Mistral Pro 额度',
+      pillTitle: 'Mistral 额度',
       panelClose: '关闭',
-      panelSetup: '打开 设置 → Mistral Pro 添加账号与 API Key。',
+      panelSetup: '打开 设置 → Mistral 添加账号与 API Key。',
       panelNoData: '暂无用量数据。',
       pillNoAccount: '尚未配置 Mistral 账号',
       pillSetup: '打开设置',
@@ -215,7 +215,7 @@ window.__ModuleLoader__.load({
       onlyVisible: '只看已启用',
       panelCookieTitle: 'API Key 读取额度失败',
       panelCookieBody: '账单接口拒绝了这个 Key，可能是缺少 usage 权限。也可以用管理站点 Cookie 读取同样的数据。',
-      panelCookieSteps: '登录 admin.mistral.ai，从任意请求复制 Cookie 头，粘贴到 设置 → Mistral Pro → 高级设置。',
+      panelCookieSteps: '登录 admin.mistral.ai，从任意请求复制 Cookie 头，粘贴到 设置 → Mistral → 高级设置。',
       panelOpenAdmin: '打开 Mistral Admin',
       windowVibe: 'Vibe 额度',
       windowApi: 'API 额度',
@@ -223,7 +223,7 @@ window.__ModuleLoader__.load({
     }
 
     const JA = {
-      sectionTitle: 'Mistral Pro',
+      sectionTitle: 'Mistral',
       sectionSubtitle: 'Mistral サブスクリプションのアカウント・モデル・使用量',
       accountsTitle: 'アカウント',
       accountsHint:
@@ -300,9 +300,9 @@ window.__ModuleLoader__.load({
       saveKeyEnable: '保存して有効化',
       cookieFallbackHint: '任意: キーで請求を読めない場合のみ、管理サイトの Cookie が必要です。',
       saveUsage: '使用量設定を保存',
-      pillTitle: 'Mistral Pro 使用量',
+      pillTitle: 'Mistral 使用量',
       panelClose: '閉じる',
-      panelSetup: '設定 → Mistral Pro でアカウントと API キーを追加してください。',
+      panelSetup: '設定 → Mistral でアカウントと API キーを追加してください。',
       panelNoData: '使用量データはまだありません。',
       pillNoAccount: 'Mistral アカウントが未設定です',
       pillSetup: '設定を開く',
@@ -318,7 +318,7 @@ window.__ModuleLoader__.load({
       onlyVisible: '表示中のみ',
       panelCookieTitle: 'API キーでは使用量を取得できませんでした',
       panelCookieBody: '請求エンドポイントがこのキーを拒否しました。usage 権限がない可能性があります。管理サイトの Cookie でも同じ数値を取得できます。',
-      panelCookieSteps: 'admin.mistral.ai にログインし、任意のリクエストから Cookie ヘッダーをコピーして Settings → Mistral Pro → Advanced に貼り付けてください。',
+      panelCookieSteps: 'admin.mistral.ai にログインし、任意のリクエストから Cookie ヘッダーをコピーして Settings → Mistral → Advanced に貼り付けてください。',
       panelOpenAdmin: 'Mistral Admin を開く',
       windowVibe: 'Vibe 使用枠',
       windowApi: 'API 使用枠',

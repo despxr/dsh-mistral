@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Mistral Pro",
+    "title": "Mistral",
     "description": "把 Mistral 订阅套餐接入 DSH：多账号无感容灾、实时模型目录、月度额度胶囊与设置页。"
   },
   "section": {
-    "title": "Mistral Pro",
+    "title": "Mistral",
     "subtitle": "Mistral 订阅账号、模型与额度"
   },
   "accounts": {
@@ -87,7 +87,7 @@
   },
   "pill": {
     "loading": "Mistral",
-    "title": "Mistral Pro 额度",
+    "title": "Mistral 额度",
     "noAccount": "尚未配置 Mistral 账号",
     "setup": "打开设置",
     "error": "额度不可用",

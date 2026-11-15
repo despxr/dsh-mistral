@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Mistral Pro",
+    "title": "Mistral",
     "description": "Connects a Mistral subscription to DSH: multi-account failover, live model catalog, monthly usage pill and a settings page."
   },
   "section": {
-    "title": "Mistral Pro",
+    "title": "Mistral",
     "subtitle": "Mistral subscription accounts, models and usage"
   },
   "accounts": {
@@ -87,7 +87,7 @@
   },
   "pill": {
     "loading": "Mistral",
-    "title": "Mistral Pro usage",
+    "title": "Mistral usage",
     "noAccount": "No Mistral account configured",
     "setup": "Open settings",
     "error": "Usage unavailable",
