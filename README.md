@@ -42,7 +42,8 @@ Then set the provider in the profile's `cordis.patch.yml`:
 
 > The route id is `mistral-pro`, not `mistral` — dsh already ships a built-in
 > `mistral` provider and registering that name again throws
-> `configurable provider "mistral" is already declared`.
+> `configurable provider "mistral" is already declared`. The user-facing
+> display name is **Mistral**; only the route id carries the `-pro` suffix.
 
 ## Settings
 
@@ -115,11 +116,26 @@ Bundled from `dsh-mistral-native`:
 - Model filtering: `defaultOnly` → DeepSeek only; `enabled: [zai-glm-5-3]` → DeepSeek + GLM; `defaultOnly: false` → all
 - Vision: user image, tool-result image, and multi-image turns complete over `/responses`
 - Reasoning replay: a completed reasoning item is replayed and accepted on the next turn
+- `dsh web` loads and creates sessions; `dsh headless` completes text, tool and image turns
 - Cost math cross-checked against models.dev / Mistral's published rates
+
+## Testing
+
+`npm test` runs the pure-module tests with `node --test`:
+
+- `test/responses.test.js` — Responses content parts, assistant replay, tool images
+- `test/prices.test.js` — current price table and cache billing
+
+The adapter itself needs a dsh profile's peer dependencies, so end-to-end checks
+run through `dsh headless` or `dsh web`.
 
 ## Gotchas found while building
 
 - `PROVIDER_ID` must not be `mistral` — collides with the built-in provider.
+- Do not add `@deepseek-harness-tui/dsh-tui` to the `web` profile. Its
+  activation calls `root.events.on`, which the web app does not provide, and
+  session creation fails with `dsh-tui: root.events.on is unavailable from a
+  plugin activation`. Keep it in the `tui` profile.
 - Responses content parts are `input_text` / `input_image` with a string URL;
   the Chat Completions `text` / `image_url` shape is rejected with
   `400 input.str: Input should be a valid string`.
@@ -128,9 +144,10 @@ Bundled from `dsh-mistral-native`:
   `output.render returned non-lossless JSON`.
 - `config` inside a tool handler is the *provider* config object, so
   `config.baseURL` is not a string — read the endpoint explicitly.
-- A plugin's `lib/*.js` cannot be imported standalone for testing: ESM resolves
-  peer deps from the file's own location, so tests need the profile's
-  `node_modules` reachable from the project.
+- A plugin's `lib/adapter.js` cannot be imported standalone: ESM resolves
+  `@deepseek-ai/dsh-llm` from the file's own location, so adapter tests need the
+  profile's `node_modules`. `lib/responses.js` and `lib/prices.js` are pure and
+  covered by `npm test`.
 
 ## License
 
