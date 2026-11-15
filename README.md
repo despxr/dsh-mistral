@@ -12,6 +12,8 @@ Three problems, all fixed here:
 2. **Cost renders blank.** `dsh-chat-cost` maps the route `mistral` but not `mistral-pro`, and its models.dev snapshot predates `deepseek-v4-1-flash-1017`, `zai-glm-5-3` and `mistral-large-4`. This bundle ships its own price table.
 3. **Prompt caching was invisible.** Mistral bills cached prefix tokens at a discount, but the old route reported no cache reads. This bundle surfaces `cacheReadTokens` and bills the cached portion at the cache rate.
 
+On the Responses wire the adapter sends the dsh session id as `prompt_cache_key`, so cache routing stays stable across turns.
+
 ## Install
 
 ```bash
