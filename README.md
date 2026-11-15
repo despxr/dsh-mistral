@@ -116,7 +116,6 @@ Bundled from `dsh-mistral-native`:
 - Model filtering: `defaultOnly` → DeepSeek only; `enabled: [zai-glm-5-3]` → DeepSeek + GLM; `defaultOnly: false` → all
 - Vision: user image, tool-result image, and multi-image turns complete over `/responses`
 - Reasoning replay: a completed reasoning item is replayed and accepted on the next turn
-- `dsh web` loads and creates sessions; `dsh headless` completes text, tool and image turns
 - Cost math cross-checked against models.dev / Mistral's published rates
 
 ## Testing
@@ -127,15 +126,11 @@ Bundled from `dsh-mistral-native`:
 - `test/prices.test.js` — current price table and cache billing
 
 The adapter itself needs a dsh profile's peer dependencies, so end-to-end checks
-run through `dsh headless` or `dsh web`.
+run inside a dsh profile.
 
 ## Gotchas found while building
 
 - `PROVIDER_ID` must not be `mistral` — collides with the built-in provider.
-- Do not add `@deepseek-harness-tui/dsh-tui` to the `web` profile. Its
-  activation calls `root.events.on`, which the web app does not provide, and
-  session creation fails with `dsh-tui: root.events.on is unavailable from a
-  plugin activation`. Keep it in the `tui` profile.
 - Responses content parts are `input_text` / `input_image` with a string URL;
   the Chat Completions `text` / `image_url` shape is rejected with
   `400 input.str: Input should be a valid string`.
